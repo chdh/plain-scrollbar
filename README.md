@@ -6,9 +6,18 @@ Online demo: [www.source-code.biz/snippets/typescript/plainScrollbar](http://www
 NPM package: [function-curve-editor](https://www.npmjs.com/package/plain-scrollbar)<br>
 Example of how to use it: [github.com/chdh/plain-scrollbar/tree/master/example](https://github.com/chdh/plain-scrollbar/tree/master/example)
 
-The `value` property of the `PlainScrollbar` component contains the position of the scrollbar as a floating point number between 0 and 1.
+Attributes of the `PlainScrollbar` element:
 
-When the user changes the scrollbar, a `scrollbar-input` event is fired with one of the follwing
+* `orientation`: The orientation of the scrollbar. "horizontal" or "vertical".
+
+Properties of the `PlainScrollbar` element:
+
+* `value`: The current position of the thumb. A floating point number between 0 and 1.
+* `thumbSize`: The size of the thumb, relative to the trough. A floating point number between 0 and 1.
+* `orientation`: The orientation of the scrollbar. "horizontal" or "vertical". Same as the attribute with the same name.
+* `orientationBoolean`: The orientation as a read-only boolean value. `false`=horizontal, `true`=vertical.
+
+When the user changes the scrollbar, a `scrollbar-input` event is fired with one of the following
 codes in the `detail` field:
 
 * `value`: The user dragged the thumb of the scrollbar and the value property has been updated accordingly.
