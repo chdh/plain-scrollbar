@@ -3,7 +3,7 @@
 This package implements a plain scrollbar [web component](https://en.wikipedia.org/wiki/Web_Components) (HTML custom element).
 
 Online demo: [www.source-code.biz/snippets/typescript/plainScrollbar](http://www.source-code.biz/snippets/typescript/plainScrollbar)<br>
-NPM package: [function-curve-editor](https://www.npmjs.com/package/plain-scrollbar)<br>
+NPM package: [plain-scrollbar](https://www.npmjs.com/package/plain-scrollbar)<br>
 Example of how to use it: [github.com/chdh/plain-scrollbar/tree/master/example](https://github.com/chdh/plain-scrollbar/tree/master/example)
 
 Attributes of the `PlainScrollbar` element:
