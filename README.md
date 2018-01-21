@@ -25,3 +25,16 @@ codes in the `detail` field:
 * `incrementSmall`: The user clicked on the down/right button.
 * `decrementLarge`: The user clicked within the upper/left background of the trough.
 * `incrementLarge`: The user clicked within the lower/right background of the trough.
+
+The following CSS Variables (CSS Custom Properties) may be used to customize the appearance of the scrollbar.
+
+* `plain-scrollbar-button-size`
+* `plain-scrollbar-button-color`
+* `plain-scrollbar-button-color-hover`
+* `plain-scrollbar-button-color-active`
+* `plain-scrollbar-thumb-background-color`
+* `plain-scrollbar-thumb-background-color-hover`
+* `plain-scrollbar-thumb-background-color-active`
+* `plain-scrollbar-thumb-border-width`
+* `plain-scrollbar-thumb-border-color`
+* `plain-scrollbar-thumb-border-radius`
