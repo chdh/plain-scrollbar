@@ -23,6 +23,9 @@ function initScrollbarTest (scrollbarSelector: string, valueElementSelector: str
       valueElement.innerHTML = scrollbar.value.toFixed(3); }}
 
 function startup() {
+   if (!("customElements" in window) || !("attachShadow" in HTMLElement.prototype)) {
+      alert("Your browser does not support Custom Elements V1 or Shadow DOM V1.");
+      return; }
    PlainScrollbar.registerCustomElement();
    initScrollbarTest("#scrollbar1", "#scrollbar1Value");
    initScrollbarTest("#scrollbar2", "#scrollbar2Value"); }
