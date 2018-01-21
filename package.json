@@ -1,0 +1,27 @@
+{
+   "name": "plain-scrollbar",
+   "version": "1.0.0",
+   "description": "A scrollbar web component (HTML custom element)",
+   "types": "dist/PlainScrollbar.d.ts",
+   "module": "dist/PlainScrollbar.js",
+   "keywords": [
+      "scrollbar",
+      "web component",
+      "custom element"
+   ],
+   "license": "MIT",
+   "homepage": "http://www.source-code.biz/snippets/typescript/plainScrollbar",
+   "repository": "github:chdh/plain-scrollbar",
+   "contributors": [
+      {
+         "name": "Christian d'Heureuse",
+         "email": "chdh@inventec.ch"
+      }
+   ],
+   "scripts": {
+      "build": "tsc"
+   },
+   "files": [
+      "dist/*"
+   ]
+}
