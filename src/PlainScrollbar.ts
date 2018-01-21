@@ -22,7 +22,7 @@ class Widget {
    private thumbDragging:    boolean;                      // true while user is dragging the thumb
    private button1Active:    boolean;                      // true while user has mouse clicked down on button 1
    private button2Active:    boolean;                      // true while user has mouse clicked down on button 2
-   private troughActive:     boolean;                      // true while user has mouse clicken down on trough
+   private troughActive:     boolean;                      // true while user has mouse clicked down on trough
 
    constructor (host: HTMLElement) {
       this.host = host;
