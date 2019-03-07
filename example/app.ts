@@ -6,7 +6,7 @@ function initScrollbarTest (scrollbarSelector: string, valueElementSelector: str
    scrollbar.addEventListener("scrollbar-input", <EventListener>scrollbarInputEventListener);
    function scrollbarInputEventListener (event: CustomEvent) {
       // console.log("event " + event.detail);
-      let pageSize = scrollbar.thumbSize / (1 - scrollbar.thumbSize);
+      const pageSize = scrollbar.thumbSize / (1 - scrollbar.thumbSize);
       switch (event.detail) {
          case "incrementSmall": {
             scrollbar.value += pageSize / 5;

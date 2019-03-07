@@ -1,12 +1,12 @@
 class Widget {
 
-   private host:             HTMLElement;
+   private host:             PlainScrollbar;
    private root:             HTMLElement;
    private trough:           HTMLElement;
-   private button1:          HTMLElement;
-   private button2:          HTMLElement;
+   private button1:          HTMLElement;                  // up/left button
+   private button2:          HTMLElement;                  // down/right button
    private thumb:            HTMLElement;
-   private isConnected:      boolean;
+   private isConnected:      boolean = false;
 
    public  thumbSize:        number = 0.3;                 // relative thumb size (0..1)
    public  value:            number = 0;                   // current scrollbar position (0..1)
@@ -24,7 +24,7 @@ class Widget {
    private button2Active:    boolean;                      // true while user has mouse clicked down on button 2
    private troughActive:     boolean;                      // true while user has mouse clicked down on trough
 
-   constructor (host: HTMLElement) {
+   constructor (host: PlainScrollbar) {
       this.host = host;
       host.attachShadow({mode: "open"});
       const shadowRoot = host.shadowRoot!;
@@ -133,7 +133,7 @@ class Widget {
    //--- Mouse input -----------------------------------------------------------
 
    private onTroughMouseDown (event: MouseEvent) {
-      if (event.which != 1) {
+      if (event.button != 0) {
          return; }
       const r = this.trough.getBoundingClientRect();
       const pos = this.orientation ? event.clientY - r.top : event.clientX - r.left;
@@ -147,7 +147,7 @@ class Widget {
       event.stopPropagation(); }
 
    private onButtonMouseDown (event: MouseEvent, buttonNo: number) {
-      if (event.which != 1) {
+      if (event.button != 0) {
          return; }
       switch (buttonNo) {
          case 1: this.button1Active = true; break;
@@ -160,7 +160,7 @@ class Widget {
       event.stopPropagation(); }
 
    private onThumbMouseDown (event: MouseEvent) {
-      if (event.which != 1) {
+      if (event.button != 0) {
          return; }
       this.dragStartPos = this.orientation ? event.clientY : event.clientX;
       this.dragStartValue = this.value;
