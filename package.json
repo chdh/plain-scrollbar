@@ -1,6 +1,6 @@
 {
    "name": "plain-scrollbar",
-   "version": "1.0.2",
+   "version": "1.0.3",
    "description": "A scrollbar web component (HTML custom element)",
    "types": "dist/PlainScrollbar.d.ts",
    "module": "dist/PlainScrollbar.js",
@@ -15,7 +15,8 @@
    "contributors": [
       {
          "name": "Christian d'Heureuse",
-         "email": "chdh@inventec.ch"
+         "email": "chdh@inventec.ch",
+         "url": "http://www.source-code.biz"
       }
    ],
    "scripts": {

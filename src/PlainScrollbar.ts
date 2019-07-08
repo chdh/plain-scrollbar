@@ -62,8 +62,10 @@ class Widget {
          return; }
       this.root.classList.toggle("horizontal", !this.orientation);
       this.root.classList.toggle("vertical", this.orientation);
-      this.thumb.style.height = this.orientation ? percent(this.thumbSize) : "";
-      this.thumb.style.width  = this.orientation ? "": percent(this.thumbSize);
+      this.thumb.style.height    = this.orientation ? percent(this.thumbSize) : "";
+      this.thumb.style.width     = this.orientation ? "": percent(this.thumbSize);
+      this.thumb.style.minHeight = this.orientation ? "var(--plain-scrollbar-thumb-min-size, 0)" : "";
+      this.thumb.style.minWidth  = this.orientation ? "": "var(--plain-scrollbar-thumb-min-size, 0)";
       this.thumb.style.top = "";
       this.thumb.style.left = "";
       this.updateThumbPosition(); }

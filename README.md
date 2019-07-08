@@ -38,3 +38,4 @@ The following CSS variables (CSS custom properties) may be used to customize the
 * `plain-scrollbar-thumb-border-width`
 * `plain-scrollbar-thumb-border-color`
 * `plain-scrollbar-thumb-border-radius`
+* `plain-scrollbar-thumb-min-size`
