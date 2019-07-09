@@ -13,6 +13,7 @@ class Widget {
    public  orientation:      boolean = false;              // false=horizontal, true=vertical
    private clickRepeatDelay:    number = 300;              // click repetition delay time in ms
    private clickRepeatInterval: number = 100;              // click repetition interval time in ms
+   private defaultThumbMinSize: number = 15;               // default for minimum thumb size in pixels
 
    private dragStartPos:     number;                       // dragging start mouse position (clientX/Y)
    private dragStartValue:   number;                       // dragging start scrollbar position
@@ -62,10 +63,8 @@ class Widget {
          return; }
       this.root.classList.toggle("horizontal", !this.orientation);
       this.root.classList.toggle("vertical", this.orientation);
-      this.thumb.style.height    = this.orientation ? percent(this.thumbSize) : "";
-      this.thumb.style.width     = this.orientation ? "": percent(this.thumbSize);
-      this.thumb.style.minHeight = this.orientation ? "var(--plain-scrollbar-thumb-min-size, 0)" : "";
-      this.thumb.style.minWidth  = this.orientation ? "": "var(--plain-scrollbar-thumb-min-size, 0)";
+      this.thumb.style.height = this.orientation ? percent(this.getEffectiveThumbSize()) : "";
+      this.thumb.style.width  = this.orientation ? "": percent(this.getEffectiveThumbSize());
       this.thumb.style.top = "";
       this.thumb.style.left = "";
       this.updateThumbPosition(); }
@@ -78,16 +77,17 @@ class Widget {
       this.button2.classList.toggle("active", this.button2Active); }
 
    public updateThumbPosition() {
-      const v = (1 - this.thumbSize) * this.value;
+      const v = (1 - this.getEffectiveThumbSize()) * this.value;
       if (this.orientation) {
          this.thumb.style.top = percent(v); }
        else {
          this.thumb.style.left = percent(v); }}
 
+   private getThroughSize() : number {
+      return this.orientation ? this.trough.clientHeight : this.trough.clientWidth; }
+
    private computeThumbMoveValue (distancePixels: number) : number {
-      const r = this.trough.getBoundingClientRect();
-      const troughSizePixels = this.orientation ? r.height : r.width;
-      const troughSlidePixels = troughSizePixels * (1 - this.thumbSize);
+      const troughSlidePixels = this.getThroughSize() * (1 - this.getEffectiveThumbSize());
       if (troughSlidePixels < EPS) {
          return 0; }
       return distancePixels / troughSlidePixels; }
@@ -98,6 +98,23 @@ class Widget {
          return; }
       this.thumbSize = clippedNewThumbSize;
       this.updateLayout(); }
+
+   private getThumbMinSize() : number {
+      const s = this.getCssVar("--plain-scrollbar-thumb-min-size");
+      if (!s ) {
+         return this.defaultThumbMinSize; }
+      const px = decodePxValue(s);
+      if (!px) {
+         return this.defaultThumbMinSize; }
+      return px; }
+
+   private getEffectiveThumbSize() : number {
+      const thumbMinSize = this.getThumbMinSize();
+      const throughSize = this.getThroughSize();
+      if (!throughSize) {
+         return this.thumbSize; }
+      const min = Math.min(1, thumbMinSize / throughSize);
+      return Math.max(min, this.thumbSize); }
 
    public setValue (newValue: number) : boolean {
       const clippedNewValue = Math.max(0, Math.min(1, newValue));
@@ -113,6 +130,12 @@ class Widget {
       this.orientation = newOrientation;
       this.updateLayout();
       return true; }
+
+   private getCssVar (varName: string) : string | undefined {
+      const s = getComputedStyle(this.root).getPropertyValue(varName);
+      if (!s) {
+         return; }
+      return s.trim(); }
 
    //--- Events ----------------------------------------------------------------
 
@@ -139,7 +162,7 @@ class Widget {
          return; }
       const r = this.trough.getBoundingClientRect();
       const pos = this.orientation ? event.clientY - r.top : event.clientX - r.left;
-      const threshold = (this.orientation ? r.height : r.width) * (1 - this.thumbSize) * this.value;
+      const threshold = (this.orientation ? r.height : r.width) * (1 - this.getEffectiveThumbSize()) * this.value;
       const direction = pos > threshold;
       const eventSubType = direction ? "incrementLarge" : "decrementLarge";
       this.troughActive = true;
@@ -402,8 +425,13 @@ function decodeOrientation (s: string) : boolean {
       case "horizontal": return false;
       default:           throw new Error("Invalid orientation value \"" + s + "\"."); }}
 
-function percent (v: number) {
+function percent (v: number) : string {
    return (v * 100).toFixed(3) + "%"; }
+
+function decodePxValue (s: string) : number | undefined {
+   if (!s || !s.endsWith("px")) {
+      return; }
+   return Number(s.substring(0, s.length - 2)); }
 
 export function registerCustomElement() {
    customElements.define("plain-scrollbar", PlainScrollbar); }

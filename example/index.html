@@ -18,12 +18,18 @@
         --plain-scrollbar-thumb-border-width: 3px;
         --plain-scrollbar-thumb-border-color: #0f0;
         --plain-scrollbar-thumb-border-radius: 1px;
+        --plain-scrollbar-thumb-min-size: 50px;
       }
    */
  </style>
 
 </head>
 <body>
+
+<script>
+ if (!("customElements" in window) || !("attachShadow" in HTMLElement.prototype)) {
+    document.write('<p style="color: red; font-size: 20px; font-weight: bold;">Sorry, your web browser is outdated and cannot run this application!</p>'); }
+</script>
 
 <h1>Plain scrollbar example</h1>
 
