@@ -63,6 +63,7 @@ class Widget {
          return; }
       this.root.classList.toggle("horizontal", !this.orientation);
       this.root.classList.toggle("vertical", this.orientation);
+      this.thumb.style.display = (this.thumbSize == 0) ? "none" : "";
       this.thumb.style.height = this.orientation ? percent(this.getEffectiveThumbSize()) : "";
       this.thumb.style.width  = this.orientation ? "": percent(this.getEffectiveThumbSize());
       this.thumb.style.top = "";
@@ -254,6 +255,7 @@ export class PlainScrollbar extends HTMLElement {
 
    // Size of the thumb, relative to the trough.
    // A value between 0 and 1.
+   // 0 is used to hide the thumb. Small values greater than 0 are overridden by `plain-scrollbar-thumb-min-size`.
    public get thumbSize() : number {
       return this.widget.thumbSize; }
    public set thumbSize (v: number) {

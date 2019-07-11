@@ -14,6 +14,7 @@ Properties of the `PlainScrollbar` element:
 
 * `value`: The current position of the thumb. A floating point number between 0 and 1.
 * `thumbSize`: The size of the thumb, relative to the trough. A floating point number between 0 and 1.
+  The value 0 is used to hide the thumb. Small values greater than 0 are overridden by `plain-scrollbar-thumb-min-size`.
 * `orientation`: The orientation of the scrollbar. "horizontal" or "vertical". Same as the attribute with the same name.
 * `orientationBoolean`: The orientation as a read-only boolean value. `false`=horizontal, `true`=vertical.
 
@@ -38,4 +39,4 @@ The following CSS variables (CSS custom properties) may be used to customize the
 * `plain-scrollbar-thumb-border-width`
 * `plain-scrollbar-thumb-border-color`
 * `plain-scrollbar-thumb-border-radius`
-* `plain-scrollbar-thumb-min-size` (must be a pixel length value, e.g. "30px")
+* `plain-scrollbar-thumb-min-size` (Must be a pixel length value, e.g. "30px". Default is "15px".)
