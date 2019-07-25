@@ -1,29 +1,32 @@
 class Widget {
 
-   private host:             PlainScrollbar;
-   private root:             HTMLElement;
-   private trough:           HTMLElement;
-   private button1:          HTMLElement;                  // up/left button
-   private button2:          HTMLElement;                  // down/right button
-   private thumb:            HTMLElement;
-   private isConnected:      boolean = false;
+   private host:                       PlainScrollbar;
+   private root:                       HTMLElement;
+   private trough:                     HTMLElement;
+   private button1:                    HTMLElement;                  // up/left button
+   private button2:                    HTMLElement;                  // down/right button
+   private thumb:                      HTMLElement;
+   private isConnected:                boolean = false;
 
-   public  thumbSize:        number = 0.3;                 // relative thumb size (0..1)
-   public  value:            number = 0;                   // current scrollbar position (0..1)
-   public  orientation:      boolean = false;              // false=horizontal, true=vertical
-   private clickRepeatDelay:    number = 300;              // click repetition delay time in ms
-   private clickRepeatInterval: number = 100;              // click repetition interval time in ms
-   private defaultThumbMinSize: number = 15;               // default for minimum thumb size in pixels
+   public  thumbSize:                  number = 0.3;                 // relative thumb size (0..1)
+   public  value:                      number = 0;                   // current scrollbar position (0..1)
+   public  orientation:                boolean = false;              // false=horizontal, true=vertical
+   private clickRepeatDelay:           number = 300;                 // click repetition delay time in ms
+   private clickRepeatInterval:        number = 100;                 // click repetition interval time in ms
+   private defaultThumbMinSize:        number = 15;                  // default for minimum thumb size in pixels
 
-   private dragStartPos:     number;                       // dragging start mouse position (clientX/Y)
-   private dragStartValue:   number;                       // dragging start scrollbar position
-   private eventTimeoutId:   number | undefined;
+   private dragStartPos:               number;                       // dragging start pointer position (clientX/Y)
+   private dragStartValue:             number;                       // dragging start scrollbar position
+   private eventTimeoutId:             number | undefined;
+
+   private pointerCaptureId:           number | undefined;           // `undefined` = no capture active
+   private pointerCaptureElement:      HTMLElement;
 
    // User interaction state:
-   private thumbDragging:    boolean;                      // true while user is dragging the thumb
-   private button1Active:    boolean;                      // true while user has mouse clicked down on button 1
-   private button2Active:    boolean;                      // true while user has mouse clicked down on button 2
-   private troughActive:     boolean;                      // true while user has mouse clicked down on trough
+   private thumbDragging:              boolean;                      // true while user is dragging the thumb
+   private button1Active:              boolean;                      // true while user has pointer clicked down on button 1
+   private button2Active:              boolean;                      // true while user has pointer clicked down on button 2
+   private troughActive:               boolean;                      // true while user has pointer clicked down on trough
 
    constructor (host: PlainScrollbar) {
       this.host = host;
@@ -35,17 +38,22 @@ class Widget {
       this.button1 = <HTMLElement>shadowRoot.querySelector("#button1")!;
       this.button2 = <HTMLElement>shadowRoot.querySelector("#button2")!;
       this.thumb   = <HTMLElement>shadowRoot.querySelector("#thumb")!;
-      this.trough.addEventListener("mousedown", (event: MouseEvent) => this.onTroughMouseDown(event));
-      this.button1.addEventListener("mousedown", (event: MouseEvent) => this.onButtonMouseDown(event, 1));
-      this.button2.addEventListener("mousedown", (event: MouseEvent) => this.onButtonMouseDown(event, 2));
-      this.thumb.addEventListener("mousedown", (event: MouseEvent) => this.onThumbMouseDown(event));
+      this.trough.addEventListener( "pointerdown", this.onTroughPointerDown);
+      this.trough.addEventListener( "pointerup",   this.onPointerUp);
+      this.button1.addEventListener("pointerdown", (event: PointerEvent) => this.onButtonPointerDown(event, 1));
+      this.button1.addEventListener("pointerup",   this.onPointerUp);
+      this.button2.addEventListener("pointerdown", (event: PointerEvent) => this.onButtonPointerDown(event, 2));
+      this.button2.addEventListener("pointerup",   this.onPointerUp);
+      this.thumb.addEventListener(  "pointerdown", this.onThumbPointerDown);
+      this.thumb.addEventListener(  "pointerup",   this.onPointerUp);
+      this.thumb.addEventListener(  "pointermove", this.onThumbPointerMove);
       this.resetInteractionState(); }
 
    private resetInteractionState() {
       this.thumbDragging = false;
       this.button1Active = false;
       this.button2Active = false;
-      this.troughActive = false; }
+      this.troughActive  = false; }
 
    public connectedCallback() {
       this.isConnected = true;
@@ -55,8 +63,9 @@ class Widget {
 
    public disconnectedCallback() {
       this.isConnected = false;
+      this.resetInteractionState();
       this.stopEventRepetition();
-      this.removeDocumentMouseEventListeners(); }
+      this.stopPointerCapture(); }
 
    public updateLayout() {
       if (!this.isConnected) {
@@ -75,7 +84,8 @@ class Widget {
          return; }
       this.thumb.classList.toggle("active", this.thumbDragging);
       this.button1.classList.toggle("active", this.button1Active);
-      this.button2.classList.toggle("active", this.button2Active); }
+      this.button2.classList.toggle("active", this.button2Active);
+      void this.troughActive; }                                      // tslint:disable-line
 
    public updateThumbPosition() {
       const v = (1 - this.getEffectiveThumbSize()) * this.value;
@@ -138,7 +148,7 @@ class Widget {
          return; }
       return s.trim(); }
 
-   //--- Events ----------------------------------------------------------------
+   //--- Outgoing events -------------------------------------------------------
 
    private fireEvent (eventSubType: string) {
       const event = new CustomEvent("scrollbar-input", { detail: eventSubType });
@@ -156,10 +166,24 @@ class Widget {
         clearTimeout(this.eventTimeoutId);
         this.eventTimeoutId = undefined; }}
 
-   //--- Mouse input -----------------------------------------------------------
+   //--- Pointer input ----------------------------------------------------------
 
-   private onTroughMouseDown (event: MouseEvent) {
-      if (event.button != 0) {
+   private startPointerCapture (element: HTMLElement, pointerId: number) {
+      this.stopPointerCapture();
+      element.setPointerCapture(pointerId);
+      this.pointerCaptureElement = element;
+      this.pointerCaptureId = pointerId; }
+
+   private stopPointerCapture() {
+      if (!this.pointerCaptureId) {
+         return; }
+      this.pointerCaptureElement.releasePointerCapture(this.pointerCaptureId);
+      this.pointerCaptureId = undefined; }
+
+   private onTroughPointerDown = (event: PointerEvent) => {
+      if (!this.isConnected || this.pointerCaptureId) {
+         return; }
+      if (!event.isPrimary || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.button != 0) {
          return; }
       const r = this.trough.getBoundingClientRect();
       const pos = this.orientation ? event.clientY - r.top : event.clientX - r.left;
@@ -167,71 +191,65 @@ class Widget {
       const direction = pos > threshold;
       const eventSubType = direction ? "incrementLarge" : "decrementLarge";
       this.troughActive = true;
-      this.fireEventRepeatedly(eventSubType, this.clickRepeatDelay, this.clickRepeatInterval);
-      this.addDocumentMouseEventListeners();
       event.preventDefault();
-      event.stopPropagation(); }
+      event.stopPropagation();
+      this.startPointerCapture(this.trough, event.pointerId);
+      this.fireEventRepeatedly(eventSubType, this.clickRepeatDelay, this.clickRepeatInterval); };
 
-   private onButtonMouseDown (event: MouseEvent, buttonNo: number) {
-      if (event.button != 0) {
+   private onButtonPointerDown = (event: PointerEvent, buttonNo: number) => {
+      if (!this.isConnected || this.pointerCaptureId) {
+         return; }
+      if (!event.isPrimary || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.button != 0) {
          return; }
       switch (buttonNo) {
          case 1: this.button1Active = true; break;
          case 2: this.button2Active = true; break; }
       const eventSubType = (buttonNo == 1) ? "decrementSmall" : "incrementSmall";
-      this.fireEventRepeatedly(eventSubType, this.clickRepeatDelay, this.clickRepeatInterval);
-      this.addDocumentMouseEventListeners();
       this.updateStyle();
       event.preventDefault();
-      event.stopPropagation(); }
+      event.stopPropagation();
+      const buttonElement = (buttonNo == 1) ? this.button1 : this.button2;
+      this.startPointerCapture(buttonElement, event.pointerId);
+      this.fireEventRepeatedly(eventSubType, this.clickRepeatDelay, this.clickRepeatInterval); };
 
-   private onThumbMouseDown (event: MouseEvent) {
-      if (event.button != 0) {
+   private onThumbPointerDown = (event: PointerEvent) => {
+      if (!this.isConnected || this.pointerCaptureId) {
+         return; }
+      if (!event.isPrimary || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.button != 0) {
          return; }
       this.dragStartPos = this.orientation ? event.clientY : event.clientX;
       this.dragStartValue = this.value;
       this.thumbDragging = true;
-      this.addDocumentMouseEventListeners();
       this.updateStyle();
       event.preventDefault();
-      event.stopPropagation(); }
+      event.stopPropagation();
+      this.startPointerCapture(this.thumb, event.pointerId); };
 
-   private addDocumentMouseEventListeners() {
+   private onThumbPointerMove = (event: PointerEvent) => {
       if (!this.isConnected) {
          return; }
-      document.addEventListener("mousemove", this.onDocumentMouseMove);
-      document.addEventListener("mouseup",   this.onDocumentMouseUp); }
+      if (!event.isPrimary || ! this.thumbDragging) {
+         return; }
+      const pos = this.orientation ? event.clientY : event.clientX;
+      const deltaPixels = pos - this.dragStartPos;
+      const deltaValue = this.computeThumbMoveValue(deltaPixels);
+      const newValue = this.dragStartValue + deltaValue;
+      event.preventDefault();
+      event.stopPropagation();
+      if (this.setValue(newValue)) {
+         this.fireEvent("value"); }};
 
-   private removeDocumentMouseEventListeners() {
-      document.removeEventListener("mousemove", this.onDocumentMouseMove);
-      document.removeEventListener("mouseup",   this.onDocumentMouseUp); }
-
-   private onDocumentMouseMove = (event: MouseEvent) => {
-      if (this.thumbDragging) {
-         const pos = this.orientation ? event.clientY : event.clientX;
-         const deltaPixels = pos - this.dragStartPos;
-         const deltaValue = this.computeThumbMoveValue(deltaPixels);
-         const newValue = this.dragStartValue + deltaValue;
-         if (this.setValue(newValue)) {
-            this.fireEvent("value"); }
-         event.preventDefault();
-         event.stopPropagation(); }};
-
-   private onDocumentMouseUp = (event: MouseEvent) => {
-      if (this.thumbDragging) {
-         this.thumbDragging = false;
-         this.updateStyle();
-         event.preventDefault();
-         event.stopPropagation(); }
-      if (this.button1Active || this.button2Active || this.troughActive) {
-         this.button1Active = false;
-         this.button2Active = false;
-         this.troughActive = false;
-         this.updateStyle();
-         this.stopEventRepetition();
-         event.preventDefault();
-         event.stopPropagation(); }
-      this.removeDocumentMouseEventListeners(); };
+   private onPointerUp = (event: PointerEvent) => {
+      if (!this.isConnected) {
+         return; }
+      if (!event.isPrimary) {
+         return; }
+      this.resetInteractionState();
+      this.updateStyle();
+      this.stopEventRepetition();
+      this.stopPointerCapture();
+      event.preventDefault();
+      event.stopPropagation(); }
 
    } // end class
 

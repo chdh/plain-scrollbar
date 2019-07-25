@@ -12,6 +12,7 @@
       "strict": true,
       "target": "ES6",
    },
-   "files": ["app.ts"]
-
+   "include": [
+      "src/**/*"
+   ]
 }
