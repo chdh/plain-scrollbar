@@ -13,7 +13,7 @@ class Widget {
    public  orientation:                boolean = false;              // false=horizontal, true=vertical
    private clickRepeatDelay:           number = 300;                 // click repetition delay time in ms
    private clickRepeatInterval:        number = 100;                 // click repetition interval time in ms
-   private defaultThumbMinSize:        number = 15;                  // default for minimum thumb size in pixels
+   private defaultThumbMinSize:        number = 25;                  // default for minimum thumb size in pixels
 
    private dragStartPos:               number;                       // dragging start pointer position (clientX/Y)
    private dragStartValue:             number;                       // dragging start scrollbar position
@@ -453,5 +453,10 @@ function decodePxValue (s: string) : number | undefined {
       return; }
    return Number(s.substring(0, s.length - 2)); }
 
+var customElementRegistered: boolean = false;
+
 export function registerCustomElement() {
-   customElements.define("plain-scrollbar", PlainScrollbar); }
+   if (customElementRegistered) {
+      return; }
+   customElements.define("plain-scrollbar", PlainScrollbar);
+   customElementRegistered = true; }
