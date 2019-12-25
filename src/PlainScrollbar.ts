@@ -38,15 +38,21 @@ class Widget {
       this.button1 = <HTMLElement>shadowRoot.querySelector("#button1")!;
       this.button2 = <HTMLElement>shadowRoot.querySelector("#button2")!;
       this.thumb   = <HTMLElement>shadowRoot.querySelector("#thumb")!;
-      this.trough.addEventListener( "pointerdown", this.onTroughPointerDown);
-      this.trough.addEventListener( "pointerup",   this.onPointerUp);
-      this.button1.addEventListener("pointerdown", (event: PointerEvent) => this.onButtonPointerDown(event, 1));
-      this.button1.addEventListener("pointerup",   this.onPointerUp);
-      this.button2.addEventListener("pointerdown", (event: PointerEvent) => this.onButtonPointerDown(event, 2));
-      this.button2.addEventListener("pointerup",   this.onPointerUp);
-      this.thumb.addEventListener(  "pointerdown", this.onThumbPointerDown);
-      this.thumb.addEventListener(  "pointerup",   this.onPointerUp);
-      this.thumb.addEventListener(  "pointermove", this.onThumbPointerMove);
+      this.trough.addEventListener( "pointerdown",   this.onTroughPointerDown);
+      this.trough.addEventListener( "pointerup",     this.onPointerUp);
+      this.trough.addEventListener( "pointercancel", this.onPointerUp);
+      this.button1.addEventListener("pointerdown",   (event: PointerEvent) => this.onButtonPointerDown(event, 1));
+      this.button1.addEventListener("pointerup",     this.onPointerUp);
+      this.button1.addEventListener("pointercancel", this.onPointerUp);
+      this.button1.addEventListener("contextmenu",   (e: Event) => e.preventDefault()); // to prevent popup on long touch
+      this.button2.addEventListener("pointerdown",   (event: PointerEvent) => this.onButtonPointerDown(event, 2));
+      this.button2.addEventListener("pointerup",     this.onPointerUp);
+      this.button2.addEventListener("pointercancel", this.onPointerUp);
+      this.button2.addEventListener("contextmenu",   (e: Event) => e.preventDefault()); // to prevent popup on long touch
+      this.thumb.addEventListener(  "pointerdown",   this.onThumbPointerDown);
+      this.thumb.addEventListener(  "pointerup",     this.onPointerUp);
+      this.thumb.addEventListener(  "pointercancel", this.onPointerUp);
+      this.thumb.addEventListener(  "pointermove",   this.onThumbPointerMove);
       this.resetInteractionState(); }
 
    private resetInteractionState() {
@@ -328,6 +334,8 @@ const scrollbarStyle = `
       border-color: #dddddd;
    }
    #root {
+      touch-action: none;
+      user-select: none;
       box-sizing: border-box;
       position: relative;
       width: 100%;
