@@ -198,7 +198,6 @@ class Widget {
       const eventSubType = direction ? "incrementLarge" : "decrementLarge";
       this.troughActive = true;
       event.preventDefault();
-      event.stopPropagation();
       this.startPointerCapture(this.trough, event.pointerId);
       this.fireEventRepeatedly(eventSubType, this.clickRepeatDelay, this.clickRepeatInterval); };
 
@@ -213,7 +212,6 @@ class Widget {
       const eventSubType = (buttonNo == 1) ? "decrementSmall" : "incrementSmall";
       this.updateStyle();
       event.preventDefault();
-      event.stopPropagation();
       const buttonElement = (buttonNo == 1) ? this.button1 : this.button2;
       this.startPointerCapture(buttonElement, event.pointerId);
       this.fireEventRepeatedly(eventSubType, this.clickRepeatDelay, this.clickRepeatInterval); };
@@ -228,7 +226,6 @@ class Widget {
       this.thumbDragging = true;
       this.updateStyle();
       event.preventDefault();
-      event.stopPropagation();
       this.startPointerCapture(this.thumb, event.pointerId); };
 
    private onThumbPointerMove = (event: PointerEvent) => {
@@ -241,7 +238,6 @@ class Widget {
       const deltaValue = this.computeThumbMoveValue(deltaPixels);
       const newValue = this.dragStartValue + deltaValue;
       event.preventDefault();
-      event.stopPropagation();
       if (this.setValue(newValue)) {
          this.fireEvent("value"); }};
 
@@ -254,8 +250,7 @@ class Widget {
       this.updateStyle();
       this.stopEventRepetition();
       this.stopPointerCapture();
-      event.preventDefault();
-      event.stopPropagation(); }
+      event.preventDefault(); }
 
    } // end class
 
