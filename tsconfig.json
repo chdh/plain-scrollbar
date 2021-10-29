@@ -3,6 +3,7 @@
       "allowUnreachableCode": false,
       "alwaysStrict": true,
       "declaration": true,
+      "forceConsistentCasingInFileNames": true,
       "lib": ["ES2016", "DOM"],
       "module": "ES6",
       "moduleResolution": "node",

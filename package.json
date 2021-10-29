@@ -1,16 +1,17 @@
 {
    "name": "plain-scrollbar",
-   "version": "1.0.8",
+   "version": "1.0.9",
    "description": "A scrollbar web component (HTML custom element)",
    "types": "dist/PlainScrollbar.d.ts",
-   "module": "dist/PlainScrollbar.js",
+   "main": "dist/PlainScrollbar.js",
+   "type": "module",
    "keywords": [
       "scrollbar",
       "web component",
       "custom element"
    ],
    "license": "MIT",
-   "homepage": "http://www.source-code.biz/snippets/typescript/plainScrollbar",
+   "homepage": "https://www.source-code.biz/snippets/typescript/plainScrollbar",
    "repository": "github:chdh/plain-scrollbar",
    "contributors": [
       {

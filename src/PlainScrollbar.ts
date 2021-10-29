@@ -1,4 +1,5 @@
 class Widget {
+
    private host:                       PlainScrollbar;
    private root:                       HTMLElement;
    private trough:                     HTMLElement;
@@ -27,7 +28,7 @@ class Widget {
    private button2Active:              boolean;                      // true while user has pointer clicked down on button 2
    private troughActive:               boolean;                      // true while user has pointer clicked down on trough
 
-   constructor (host: PlainScrollbar) {
+   public constructor (host: PlainScrollbar) {
       this.host = host;
       host.attachShadow({mode: "open"});
       const shadowRoot = host.shadowRoot!;
@@ -249,7 +250,7 @@ class Widget {
       this.updateStyle();
       this.stopEventRepetition();
       this.stopPointerCapture();
-      event.preventDefault(); }
+      event.preventDefault(); };
 
    } // end class
 
@@ -259,7 +260,7 @@ export class PlainScrollbar extends HTMLElement {
 
    private widget:           Widget;
 
-   constructor() {
+   public constructor() {
       super();
       this.widget = new Widget(this); }
 

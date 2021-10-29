@@ -27,7 +27,7 @@ codes in the `detail` field:
 * `decrementLarge`: The user clicked within the upper/left background of the trough.
 * `incrementLarge`: The user clicked within the lower/right background of the trough.
 
-The following CSS variables (CSS custom properties) may be used to customize the appearance of the scrollbar.
+The following CSS variables (CSS custom properties) can be used to customize the appearance of the scrollbar:
 
 * `plain-scrollbar-button-size`
 * `plain-scrollbar-button-color`
@@ -40,3 +40,17 @@ The following CSS variables (CSS custom properties) may be used to customize the
 * `plain-scrollbar-thumb-border-color`
 * `plain-scrollbar-thumb-border-radius`
 * `plain-scrollbar-thumb-min-size` (Must be a pixel length value, e.g. "30px". Default is "15px".)
+
+The following CSS ::part() pseudo-elements can be used to customize the appearance of the scrollbar:
+
+* `root`
+* `button`
+* `button1`
+* `button2`
+* `arrow`
+* `upArrow`
+* `downArrow`
+* `leftArrow`
+* `rightArrow`
+* `trough`
+* `thumb`
