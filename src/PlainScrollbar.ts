@@ -1,5 +1,4 @@
 class Widget {
-
    private host:                       PlainScrollbar;
    private root:                       HTMLElement;
    private trough:                     HTMLElement;
@@ -422,17 +421,17 @@ const scrollbarStyle = `
 
 const scrollbarHtmlTemplate = `
    <style>${scrollbarStyle}</style>
-   <div id="root">
-    <div id="button1">
-     <svg id="upArrow" viewBox="-100 -100 200 200">${buttonPath}</svg>
-     <svg id="leftArrow" viewBox="-100 -100 200 200"><g transform="rotate(-90)">${buttonPath}</g></svg>
+   <div id="root" part="root">
+    <div id="button1" part="button button1">
+     <svg id="upArrow" part="arrow upArrow" viewBox="-100 -100 200 200">${buttonPath}</svg>
+     <svg id="leftArrow" part="arrow leftArrow" viewBox="-100 -100 200 200"><g transform="rotate(-90)">${buttonPath}</g></svg>
     </div>
-    <div id="trough">
-     <div id="thumb"></div>
+    <div id="trough" part="trough">
+     <div id="thumb" part="thumb"></div>
     </div>
-    <div id="button2">
-     <svg id="downArrow" viewBox="-100 -100 200 200"><g transform="rotate(180)">${buttonPath}</g></svg>
-     <svg id="rightArrow" viewBox="-100 -100 200 200"><g transform="rotate(90)">${buttonPath}</g></svg>
+    <div id="button2" part="button button2">
+     <svg id="downArrow" part="arrow downArrow" viewBox="-100 -100 200 200"><g transform="rotate(180)">${buttonPath}</g></svg>
+     <svg id="rightArrow" part="arrow rightArrow" viewBox="-100 -100 200 200"><g transform="rotate(90)">${buttonPath}</g></svg>
     </div>
    </div>
    `;
